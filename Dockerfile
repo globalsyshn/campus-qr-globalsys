@@ -1,23 +1,22 @@
-# Imagen base con Java 17 (compatible con Ktor)
-FROM eclipse-temurin:17-jdk
+# Imagen base con Java 17
+FROM eclipse-temurin:17-jdk-jammy
 
-# Crear carpeta de la app
+# Usuario de la app (igual que antes)
+ENV APPLICATION_USER ktor
+
+RUN useradd --create-home --shell /bin/bash $APPLICATION_USER
+USER $APPLICATION_USER
+
 WORKDIR /app
 
-# Copiar TODO el proyecto al contenedor
+# Copiar el código del repo al contenedor
 COPY . .
 
-# Dar permisos al gradlew
-RUN chmod +x ./gradlew
+# Dar permisos al gradlew y construir el proyecto (genera Server.jar)
+RUN chmod +x ./gradlew && ./gradlew stage --no-daemon -x test
 
-# Construir la app (elimina tests para evitar fallos en build)
-RUN ./gradlew build -x test
-
-# Buscar el .jar generado y renombrarlo como app.jar
-RUN cp $(find build/libs -name "*.jar" | head -n 1) app.jar
-
-# Puerto donde corre Ktor
+# Ktor suele usar el puerto 8080
 EXPOSE 8080
 
-# Comando para ejecutar el servidor
-CMD ["java", "-jar", "app.jar"]
+# Levantar la app (ajusta la ruta al jar si tu Dockerfile original copiaba el Server.jar a otra carpeta)
+CMD ["java", "-jar", "Server.jar"]
