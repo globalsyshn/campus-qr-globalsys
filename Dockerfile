@@ -1,28 +1,23 @@
-# Java 17 LTS soportado por Railway
+# Imagen base con Java 17 (compatible con Ktor)
 FROM eclipse-temurin:17-jdk
 
-ENV APPLICATION_USER=ktor
-
-# Crear usuario de la app
-RUN useradd -ms /bin/bash ${APPLICATION_USER}
-
-# Carpeta de trabajo
+# Crear carpeta de la app
 WORKDIR /app
 
-# Copiar el código y asignar propietario al usuario ktor
-COPY --chown=${APPLICATION_USER}:${APPLICATION_USER} . /app
+# Copiar TODO el proyecto al contenedor
+COPY . .
 
-# A partir de aquí todo se ejecuta como ktor
-USER ${APPLICATION_USER}
+# Dar permisos al gradlew
+RUN chmod +x ./gradlew
 
-# Dar permisos a gradlew y compilar el proyecto
-RUN chmod +x ./gradlew \
-    && ./gradlew build -x test --no-daemon
+# Construir la app (elimina tests para evitar fallos en build)
+RUN ./gradlew build -x test
 
-# Copiar el JAR generado a un nombre fijo
+# Buscar el .jar generado y renombrarlo como app.jar
 RUN cp $(find build/libs -name "*.jar" | head -n 1) app.jar
 
-# Puerto por defecto de Ktor
+# Puerto donde corre Ktor
 EXPOSE 8080
 
+# Comando para ejecutar el servidor
 CMD ["java", "-jar", "app.jar"]
