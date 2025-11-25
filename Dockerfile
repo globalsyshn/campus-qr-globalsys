@@ -1,25 +1,19 @@
-# Debian based
+# Imagen base con JDK 11
 FROM eclipse-temurin:11-jdk
 
-ENV APPLICATION_USER ktor
-RUN adduser --disabled-password --gecos '' $APPLICATION_USER
-
-# Crear carpeta de app
-RUN mkdir /app && chown -R $APPLICATION_USER /app
-
-USER $APPLICATION_USER
-
-# El código YA está en la imagen (Render monta el repo),
-# solo lo copiamos a /src-code para construir
+# Directorio de trabajo donde se copiará el código
 WORKDIR /src-code
+
+# Copiar todo el repo al contenedor
 COPY . /src-code
 
-# Dar permisos al gradlew y construir
+# Dar permisos al gradlew y construir el proyecto
 RUN chmod +x ./gradlew && ./gradlew stage
 
-# Copiar el jar generado a /app
-RUN cp Server.jar /app/Server.jar
+# Crear carpeta para la app y copiar el jar generado
+RUN mkdir -p /app && cp Server.jar /app/Server.jar
 
+# Cambiar al directorio de la app
 WORKDIR /app
 
 # Ejecutar el servidor
