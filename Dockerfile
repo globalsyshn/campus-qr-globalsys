@@ -2,22 +2,20 @@
 FROM eclipse-temurin:11-jdk
 
 ENV APPLICATION_USER ktor
-RUN echo $APPLICATION_USER
 RUN adduser --disabled-password --gecos '' $APPLICATION_USER
 
-RUN mkdir /app
-RUN chown -R $APPLICATION_USER /app
-
-# Clonar el repositorio original dentro del contenedor
-RUN git clone https://github.com/studo-app/campus-qr.git /src-code
-RUN chown -R $APPLICATION_USER /src-code
+# Crear carpeta de app
+RUN mkdir /app && chown -R $APPLICATION_USER /app
 
 USER $APPLICATION_USER
 
+# El código YA está en la imagen (Render monta el repo),
+# solo lo copiamos a /src-code para construir
 WORKDIR /src-code
+COPY . /src-code
 
-# Construir con Gradle
-RUN ./gradlew stage
+# Dar permisos al gradlew y construir
+RUN chmod +x ./gradlew && ./gradlew stage
 
 # Copiar el jar generado a /app
 RUN cp Server.jar /app/Server.jar
