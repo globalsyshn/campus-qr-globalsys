@@ -1,5 +1,5 @@
 # Imagen base con JDK 11
-FROM eclipse-temurin:11-jdk
+FROM eclipse-temurin:17-jdk
 
 # Directorio de trabajo donde se copiará el código
 WORKDIR /src-code
