@@ -1,23 +1,26 @@
-#debian based
+# Java estable soportado por Railway
 FROM eclipse-temurin:17-jdk
 
 ENV APPLICATION_USER ktor
-RUN echo $APPLICATION_USER
-RUN adduser --disabled-password --gecos '' $APPLICATION_USER
+RUN useradd -ms /bin/bash $APPLICATION_USER
 
-RUN mkdir /app
-RUN chown -R $APPLICATION_USER /app
-
-RUN git clone https://github.com/studo-app/campus-qr.git /src-code
-
-RUN chown -R $APPLICATION_USER /src-code
+RUN mkdir /app && chown -R $APPLICATION_USER /app
 
 USER $APPLICATION_USER
 
-WORKDIR /src-code
-RUN ./gradlew stage # Stage command will also be used by Heroku/Scalingo file
-
-RUN cp Server.jar /app/Server.jar
 WORKDIR /app
 
-CMD ["java", "-jar", "Server.jar"]
+# Copiar el código al contenedor
+COPY . /app
+
+# Dar permisos a gradlew
+RUN chmod +x ./gradlew
+
+# Construir el JAR (usa el task "stage" si existe)
+RUN ./gradlew build -x test
+
+# Buscar el JAR generado
+RUN cp $(find ./build/libs -name "*.jar" | head -n 1) app.jar
+
+EXPOSE 8080
+CMD ["java", "-jar", "app.jar"]
