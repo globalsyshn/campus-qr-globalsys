@@ -1,6 +1,11 @@
 #debian based
 FROM eclipse-temurin:11-jdk-focal
 
+# --- Corrección: Instalar Git ---
+# Necesario para ejecutar el siguiente comando RUN git clone
+RUN apt-get update && apt-get install -y git
+# --------------------------------
+
 ENV APPLICATION_USER ktor
 RUN echo $APPLICATION_USER
 RUN adduser --disabled-password --gecos '' $APPLICATION_USER
