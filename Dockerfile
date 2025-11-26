@@ -25,7 +25,8 @@ RUN ./gradlew stage # Stage command will also be used by Heroku/Scalingo file
 RUN cp Server.jar /app/Server.jar
 WORKDIR /app
 
-# 💡 CORRECCIÓN CRÍTICA: Inyectar la variable MONGO_URI en la JVM
-# Esto transforma la variable de entorno de Render (${MONGO_URI}) en una propiedad
-# del sistema Java (-D...) que la aplicación puede leer durante la inicialización
-CMD ["java", "-Ddeployment.environment=production", "-jar", "Server.jar"]
+# 💡 SOLUCIÓN CRÍTICA: Inyectar la URI de MongoDB directamente en Java.
+# Esto garantiza que el cliente de MongoDB (Katerbase/Mongo Driver) lea la URI correctamente
+# y deje de intentar conectarse a "localhost:27017".
+# La propiedad que Ktor está buscando es 'ktor.database.url'.
+CMD ["java", "-Ddeployment.environment=production", "-Dktor.database.url=mongodb+srv://globalsyshn_db_user:3x62K0nnOzBvmEtT@campusqr-db.pmnaye2.mongodb.net/?appName=CampusQR-DB", "-jar", "Server.jar"]
