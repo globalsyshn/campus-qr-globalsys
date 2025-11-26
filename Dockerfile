@@ -25,6 +25,5 @@ RUN ./gradlew stage # Stage command will also be used by Heroku/Scalingo file
 RUN cp Server.jar /app/Server.jar
 WORKDIR /app
 
-# 🚀 LÍNEA CRÍTICA CORREGIDA: La URI se inyecta directamente como propiedad del sistema.
-# Esto asegura que el cliente de MongoDB la reciba y pueda conectarse a Atlas.
-CMD ["java", "-Ddeployment.environment=production", "-Dktor.database.url=mongodb+srv://globalsyshn_db_user:3x62K0nnOzBvmEtT@campusqr-db.pmnaye2.mongodb.net/?appName=CampusQR-DB", "-jar", "Server.jar"]
+# 🚀 LÍNEA CRÍTICA FINAL: La URI de MongoDB debe ser visible y completa aquí.
+CMD ["java", "-Ddeployment.environment=production", "-Dktor.database.url=mongodb+srv://globalsyshn_db_user:3x62K0nnOzvmEtT@campusqr-db.pmnaye2.mongodb.net/?appName=CampusQR-DB", "-jar", "Server.jar"]
