@@ -1,22 +1,23 @@
-# Imagen base con Java 17
-FROM eclipse-temurin:17-jdk-jammy
+#debian based
+FROM openjdk:11-jdk
 
-# Usuario de la app (igual que antes)
 ENV APPLICATION_USER ktor
+RUN echo $APPLICATION_USER
+RUN adduser --disabled-password --gecos '' $APPLICATION_USER
 
-RUN useradd --create-home --shell /bin/bash $APPLICATION_USER
+RUN mkdir /app
+RUN chown -R $APPLICATION_USER /app
+
+RUN git clone https://github.com/studo-app/campus-qr.git /src-code
+
+RUN chown -R $APPLICATION_USER /src-code
+
 USER $APPLICATION_USER
 
+WORKDIR /src-code
+RUN ./gradlew stage # Stage command will also be used by Heroku/Scalingo file
+
+RUN cp Server.jar /app/Server.jar
 WORKDIR /app
 
-# Copiar el código del repo al contenedor
-COPY . .
-
-# Dar permisos al gradlew y construir el proyecto (genera Server.jar)
-RUN chmod +x ./gradlew && ./gradlew stage --no-daemon -x test
-
-# Ktor suele usar el puerto 8080
-EXPOSE 8080
-
-# Levantar la app (ajusta la ruta al jar si tu Dockerfile original copiaba el Server.jar a otra carpeta)
 CMD ["java", "-jar", "Server.jar"]
