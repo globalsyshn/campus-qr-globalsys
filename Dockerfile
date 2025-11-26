@@ -1,5 +1,5 @@
 #debian based
-FROM eclipse-temurin:11-jdk-focal
+FROM eclipse-temurin:17-jdk-focal
 
 # --- Corrección: Instalar Git ---
 # Necesario para ejecutar el siguiente comando RUN git clone
