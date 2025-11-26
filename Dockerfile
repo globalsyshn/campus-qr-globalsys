@@ -1,5 +1,5 @@
 #debian based
-FROM openjdk:11-jdk-buster
+FROM eclipse-temurin:11-jdk-focal
 
 ENV APPLICATION_USER ktor
 RUN echo $APPLICATION_USER
