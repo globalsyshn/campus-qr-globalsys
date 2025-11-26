@@ -1,5 +1,5 @@
 #debian based
-FROM openjdk:11-jdk-slim
+FROM openjdk:11-jdk-buster
 
 ENV APPLICATION_USER ktor
 RUN echo $APPLICATION_USER
