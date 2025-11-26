@@ -1,4 +1,4 @@
-#debian based
+# debian based
 FROM eclipse-temurin:21-jdk
 
 # --- Corrección: Instalar Git ---
@@ -20,7 +20,9 @@ RUN chown -R $APPLICATION_USER /src-code
 USER $APPLICATION_USER
 
 WORKDIR /src-code
-RUN ./gradlew stage # Stage command will also be used by Heroku/Scalingo file
+# *** CAMBIO APLICADO AQUÍ ***
+# Se agregó 'clean' antes de 'stage' para resolver el error de Webpack/Kotlin/JS.
+RUN ./gradlew clean stage
 
 RUN cp Server.jar /app/Server.jar
 WORKDIR /app
