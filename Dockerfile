@@ -28,4 +28,4 @@ WORKDIR /app
 # 💡 CORRECCIÓN CRÍTICA: Inyectar la variable MONGO_URI en la JVM
 # Esto transforma la variable de entorno de Render (${MONGO_URI}) en una propiedad
 # del sistema Java (-D...) que la aplicación puede leer durante la inicialización
-CMD ["java", "-DMONGO_URI=${MONGO_URI}", "-jar", "Server.jar"]
+CMD ["java", "-Dktor.config.environment=production", "-DMONGO_URI=${MONGO_URI}", "-jar", "Server.jar"]
