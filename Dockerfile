@@ -25,8 +25,6 @@ RUN ./gradlew stage # Stage command will also be used by Heroku/Scalingo file
 RUN cp Server.jar /app/Server.jar
 WORKDIR /app
 
-# 💡 SOLUCIÓN CRÍTICA: Inyectar la URI de MongoDB directamente en Java.
-# Esto garantiza que el cliente de MongoDB (Katerbase/Mongo Driver) lea la URI correctamente
-# y deje de intentar conectarse a "localhost:27017".
-# La propiedad que Ktor está buscando es 'ktor.database.url'.
+# 🚀 LÍNEA CRÍTICA CORREGIDA: La URI se inyecta directamente como propiedad del sistema.
+# Esto asegura que el cliente de MongoDB la reciba y pueda conectarse a Atlas.
 CMD ["java", "-Ddeployment.environment=production", "-Dktor.database.url=mongodb+srv://globalsyshn_db_user:3x62K0nnOzBvmEtT@campusqr-db.pmnaye2.mongodb.net/?appName=CampusQR-DB", "-jar", "Server.jar"]
