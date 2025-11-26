@@ -25,4 +25,7 @@ RUN ./gradlew stage # Stage command will also be used by Heroku/Scalingo file
 RUN cp Server.jar /app/Server.jar
 WORKDIR /app
 
-CMD ["java", "-jar", "Server.jar"]
+# 💡 CORRECCIÓN CRÍTICA: Inyectar la variable MONGO_URI en la JVM
+# Esto transforma la variable de entorno de Render (${MONGO_URI}) en una propiedad
+# del sistema Java (-D...) que la aplicación puede leer durante la inicialización
+CMD ["java", "-DMONGO_URI=${MONGO_URI}", "-jar", "Server.jar"]
